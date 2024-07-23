@@ -11,7 +11,7 @@ This project is basically based on [memFiles](https://github.com/Octoberfest7/me
 
 Details are all at [memFiles](https://github.com/Octoberfest7/memFiles), I'm just trying to port to Havoc c&c.
 
-I deleted unnecessary hooks for MiniWriteDump, such as NtFlushBuffersFile.Please note that you must have a high level administrator token (UAC bypass).You can find the .dmp file in havoc’s loot
+I deleted unnecessary hooks for MiniWriteDump, such as NtFlushBuffersFile.Please note that you must have a high level administrator token (UAC bypass).This will not write dump file to the target's file system,You can find the .dmp file in havoc’s loot
 
 ## Install
 
