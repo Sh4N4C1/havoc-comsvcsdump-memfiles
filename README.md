@@ -29,7 +29,7 @@ comsvcsdump_memfiles
 
 ## Process
 
-- Install NtAPi Hook via [Memfile][https://github.com/Octoberfest7/memFiles]
+- Install NtAPi Hook via [Memfile](https://github.com/Octoberfest7/memFiles)
 - Call MiniWriteDump 
 - Fetch Memfiles
 - Clean Memfiles
