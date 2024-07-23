@@ -33,3 +33,6 @@ comsvcsdump_memfiles
 - Call MiniWriteDump 
 - Fetch Memfiles
 - Clean Memfiles
+
+## TODO
+- nanodump ?
